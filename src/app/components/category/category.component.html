@@ -1,0 +1,209 @@
+<div class="bg-emerald-500">
+  <div
+    class="max-w-screen-xl mx-auto px-4 py-3 flex items-start justify-between text-white md:px-8"
+  >
+    <div class="flex gap-x-4">
+      <div
+        class="w-10 h-10 flex-none rounded-lg bg-emerald-300 flex items-center justify-center"
+      >
+        <svg
+          class="w-6 h-6"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"
+          />
+        </svg>
+      </div>
+      <p class="py-2 font-medium">
+        SQLite
+        <a
+          href="javascript:void(0)"
+          class="font-semibold underline duration-150 hover:text-indigo-100"
+          >documentación</a
+        >.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div>
+  <h1
+    class="mb-4 text-4xl pl-8 pt-5 font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl"
+  >
+    Categorías
+  </h1>
+  <p class="mb-6 text-lg font-normal text-gray-500 pl-10 dark:text-gray-400">
+    Demo de SQLite con Dexie, recuerda estar en linea e inspeccionar la base de
+    datos desde el inspector del navegador en "Aplicación"
+  </p>
+</div>
+
+<div class="pl-10 w-2/4">
+  <form [formGroup]="Formulario" (ngSubmit)="addSave()">
+    <div class="grid grid-cols-3">
+      <div class="relative col-span-2 max-w-xs">
+        <svg
+          class="w-6 h-6 text-gray-400 absolute left-3 inset-y-0 my-auto"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 6h.008v.008H6V6z"
+          />
+        </svg>
+
+        <input
+          formControlName="name"
+          type="text"
+          placeholder="Ingresa una categoría"
+          class="w-full pl-12 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-emerald-600 shadow-sm rounded-lg"
+        />
+      </div>
+      <button
+        class="px-4 py-2 col-span-1 text-sm text-white duration-100 bg-emerald-500 rounded-md shadow-md focus:shadow-none ring-offset-2 ring-emerald-600 focus:ring-2"
+        type="submit"
+        [disabled]="Formulario.invalid"
+      >
+        Guardar
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="pl-10 pt-3">
+  <ul>
+    <h1 class="text-2xl text-gray-900">Categorías guardadas localmente:</h1>
+
+    <li class="pl-5" *ngFor="let item of Data">
+      <span class="text-xl text-gray-900"> • {{ item.name }} </span>
+      <button
+        class="px-4 py-1.5 text-emerald-600 bg-green-50 rounded-lg duration-150 hover:bg-green-100 active:bg-green-200"
+        (click)="editCategory(item)"
+      >
+        Actualizar
+      </button>
+      <button
+        class="px-4 py-1.5 text-sm text-white duration-150 bg-red-500 rounded-md hover:bg-red-500 active:shadow-lg"
+        (click)="deleteData(item.id)"
+      >
+        Eliminar
+      </button>
+    </li>
+  </ul>
+</div>
+
+<div class="pl-10 pt-10 text-2xl text-gray-900">
+  <h1>Actualizar:</h1>
+</div>
+
+<!-- <div>
+  <form [formGroup]="FormularioUpdate">
+    <input formControlName="name" type="text" />
+    <input formControlName="id" type="text" />
+    <button (click)="actualizarData()" type="submit">Actualizar</button>
+  </form>
+</div> -->
+
+<form class="pt-2 pl-10" [formGroup]="FormularioUpdate">
+  <div class="grid grid-cols-8 w-10/12">
+    <div class="col-span-3 max-w-xs">
+      <input
+        formControlName="name"
+        type="text"
+        placeholder="Nuevo Nombre"
+        class="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-emerald-600 shadow-sm rounded-lg"
+      />
+    </div>
+    <div class="col-span-3 max-w-xs">
+      <input
+        formControlName="id"
+        type="text"
+        placeholder="Nuevo ID"
+        class="w-full pl-4 pr-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-emerald-600 shadow-sm rounded-lg"
+      />
+    </div>
+    <button
+      class="px-4 py-2 col-span-1 text-sm text-white duration-100 bg-emerald-500 rounded-md shadow-md focus:shadow-none ring-offset-2 ring-emerald-600 focus:ring-2"
+      (click)="actualizarData()"
+    >
+      Actualizar
+    </button>
+  </div>
+</form>
+
+<div class="pl-10 pt-5">
+  <h4 style="color: red" class="text-2xl">Eliminar todos los datos</h4>
+  <!-- <button (click)="eliminarTodo()">BORRAR</button> -->
+
+  <button
+    class="px-24 py-2 col-span-1 text-sm text-white duration-100 bg-red-500 rounded-md shadow-md focus:shadow-none ring-offset-2 ring-red-600 focus:ring-2"
+    (click)="eliminarTodo()"
+  >
+    BORRAR
+  </button>
+</div>
+
+
+
+
+<!-- ALERTAS -->
+<div
+  *ngIf="alertaUno == true"
+  class="fixed top-0 right-0 mt-12 mr-4 px-4 rounded-md border-l-4 border-green-500 bg-green-50 md:max-w-2xl md:mx-auto"
+>
+  <div class="flex justify-between py-3">
+    <div class="flex">
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 rounded-full text-green-500"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </div>
+      <div class="self-center ml-3">
+        <span class="text-green-600 font-semibold"> Exito! </span>
+        <p class="text-green-600 mt-1">
+          Se a completado la acción de manera correcta.
+        </p>
+      </div>
+    </div>
+    <button (click)="alertaUnoOff()" class="self-start text-green-500">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fillRule="evenodd"
+          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
