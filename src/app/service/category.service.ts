@@ -49,12 +49,6 @@ export class CategoryService {
       });
   }
 
-  /* DeleteToIndexDB(id: any) {
-    this.db.category.delete(id).then(() => {
-      console.log('Eliminado successfully');
-    });
-  } */
-
   async deleteCategory(categoryId: string) {
     await this.db.category.delete(categoryId);
     this.dataSubject.next([...this.Data]);
@@ -86,10 +80,12 @@ export class CategoryService {
     });
   }
 
+  /* Limpiar BDD */
   eliminarTodo() {
     this.db.category.clear()
   }
 
+  /* Obtener todas las categorias */
   async getAllCategories() {
     const categories: Category[] = await this.db.category.toArray();
     return categories.map((category: Category) => ({

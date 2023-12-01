@@ -1,3 +1,4 @@
+<!-- Banner Principal -->
 <div class="bg-emerald-500">
   <div
     class="max-w-screen-xl mx-auto px-4 py-3 flex items-start justify-between text-white md:px-8"
@@ -22,7 +23,7 @@
         </svg>
       </div>
       <p class="py-2 font-medium">
-        SQLite
+        SQLite, Recuerda desactivar tu conexion a internet
         <a
           href="javascript:void(0)"
           class="font-semibold underline duration-150 hover:text-indigo-100"
@@ -33,6 +34,7 @@
   </div>
 </div>
 
+<!-- Titulo y descripción -->
 <div>
   <h1
     class="mb-4 text-4xl pl-8 pt-5 font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl"
@@ -45,6 +47,7 @@
   </p>
 </div>
 
+<!-- Formulario de Agregar -->
 <div class="pl-10 w-2/4">
   <form [formGroup]="Formulario" (ngSubmit)="addSave()">
     <div class="grid grid-cols-3">
@@ -87,6 +90,7 @@
   </form>
 </div>
 
+<!-- Categorías guardadas -->
 <div class="pl-10 pt-3">
   <ul>
     <h1 class="text-2xl text-gray-900">Categorías guardadas localmente:</h1>
@@ -109,18 +113,12 @@
   </ul>
 </div>
 
+<!-- Actualizar -->
 <div class="pl-10 pt-10 text-2xl text-gray-900">
   <h1>Actualizar:</h1>
 </div>
 
-<!-- <div>
-  <form [formGroup]="FormularioUpdate">
-    <input formControlName="name" type="text" />
-    <input formControlName="id" type="text" />
-    <button (click)="actualizarData()" type="submit">Actualizar</button>
-  </form>
-</div> -->
-
+<!-- Formulario de Actualizar -->
 <form class="pt-2 pl-10" [formGroup]="FormularioUpdate">
   <div class="grid grid-cols-8 w-10/12">
     <div class="col-span-3 max-w-xs">
@@ -148,10 +146,9 @@
   </div>
 </form>
 
+<!-- Eliminar todo de la bdd -->
 <div class="pl-10 pt-5">
   <h4 style="color: red" class="text-2xl">Eliminar todos los datos</h4>
-  <!-- <button (click)="eliminarTodo()">BORRAR</button> -->
-
   <button
     class="px-24 py-2 col-span-1 text-sm text-white duration-100 bg-red-500 rounded-md shadow-md focus:shadow-none ring-offset-2 ring-red-600 focus:ring-2"
     (click)="eliminarTodo()"
@@ -163,7 +160,7 @@
 
 
 
-<!-- ALERTAS -->
+<!-- ALERTA -->
 <div
   *ngIf="alertaUno == true"
   class="fixed top-0 right-0 mt-12 mr-4 px-4 rounded-md border-l-4 border-green-500 bg-green-50 md:max-w-2xl md:mx-auto"
