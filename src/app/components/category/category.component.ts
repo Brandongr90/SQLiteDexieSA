@@ -48,7 +48,7 @@ export class CategoryComponent {
 
   /* Eliminar Categoria */
   deleteData(id: any) {
-    this.CategoryService.deleteCategory(id).then(() => {
+    this.CategoryService.deleteToIndexDB("category",id).then(() => {
       this.FormularioUpdate.reset();
       this.traerTodaLaData();
       this.alertaUno = true;
@@ -61,9 +61,13 @@ export class CategoryComponent {
 
   /* Actualizar Categoria */
   actualizarData() {
+    var newdata = {
+      name:this.FormularioUpdate.value.name
+    };
     this.CategoryService.UpdateToIndexDB(
+      "category",
       this.FormularioUpdate.value.id,
-      this.FormularioUpdate.value.name
+      newdata
     ).then(() => {
       this.Formulario.reset();
       this.traerTodaLaData();
@@ -82,12 +86,12 @@ export class CategoryComponent {
 
   /* Limpiar todo de la BDD */
   eliminarTodo() {
-    this.CategoryService.eliminarTodo();
+    this.CategoryService.eliminarTodo("category");
   }
 
   /* Obtener todo lo que esta guardado */
   traerTodaLaData() {
-    this.CategoryService.getAllCategories().then((categories) => {
+    this.CategoryService.getAll("category").then((categories) => {
       this.Data = categories;
     });
   }

@@ -13,6 +13,11 @@ export class CategoryService {
   private db: any;
   private dataSubject = new BehaviorSubject<Category[]>([]);
 
+  constructor(private readonly OnlineOfflineService: OnlineOfflineService) {
+    // this.registerToEvents(OnlineOfflineService);
+    this.createDatabase();
+  }
+
   async addData(data: Category) {
     data.id = uuidv4();
     this.Data.push(data);
@@ -21,19 +26,12 @@ export class CategoryService {
     }
   }
 
-  getData() {
-    return this.Data;
-  }
-
-  constructor(private readonly OnlineOfflineService: OnlineOfflineService) {
-    this.registerToEvents(OnlineOfflineService);
-    this.createDatabase();
-  }
 
   private createDatabase() {
     this.db = new Dexie('MyDatabase');
     this.db.version(1).stores({
-      category: 'id, name',
+      category: 'id, name, phone',
+      productos: 'id, name, categoryId', // Nueva tabla 'productos' con campos id, name y categoryId
     });
   }
 
@@ -49,49 +47,49 @@ export class CategoryService {
       });
   }
 
-  async deleteCategory(categoryId: string) {
-    await this.db.category.delete(categoryId);
+  async deleteToIndexDB(tabla:string, id: string) {
+    await this.db.table(tabla).delete(id);
     this.dataSubject.next([...this.Data]);
   }
 
-  async UpdateToIndexDB(id: any, name:any) {   
-    this.db.category.update(id, {name: name}).then(() => {
+  async UpdateToIndexDB(tabla: string, id: any, data:any) {
+    this.db.table(tabla).update(id, data).then(() => {
       console.log('Actualizado successfully');
     });
   }
 
-  private registerToEvents(OnlineOfflineService: OnlineOfflineService) {
-    OnlineOfflineService.connectionChanged.subscribe((online: any) => {
-      if (online) {
-        console.log('Send Data');
-        this.sendItemsFromIndexDB();
-      } else {
-        console.log('Save Data Locale');
-      }
-    });
-  }
-
-  private async sendItemsFromIndexDB() {
-    const allItems: Category[] = await this.db.category.toArray();
-    allItems.forEach((item: Category) => {
-      this.db.category.delete(item.id).then(() => {
-        console.log(`Item: ${item.id}`);
-      });
-    });
-  }
 
   /* Limpiar BDD */
-  eliminarTodo() {
-    this.db.category.clear()
+  eliminarTodo(tabla:string) {
+    this.db.table(tabla).clear()
   }
 
   /* Obtener todas las categorias */
-  async getAllCategories() {
-    const categories: Category[] = await this.db.category.toArray();
-    return categories.map((category: Category) => ({
-      id: category.id!,
-      name: category.name
-    }));
-  }
+  async getAll(tabla:string) {
+    return await this.db.table(tabla).toArray();
 
+  }
+  // private registerToEvents(OnlineOfflineService: OnlineOfflineService) {
+  //   OnlineOfflineService.connectionChanged.subscribe((online: any) => {
+  //     if (online) {
+  //       console.log('Send Data');
+  //       this.sendItemsFromIndexDB();
+  //     } else {
+  //       console.log('Save Data Locale');
+  //     }
+  //   });
+  // }
+
+  // private async sendItemsFromIndexDB() {
+  //   const allItems: Category[] = await this.db.category.toArray();
+  //   allItems.forEach((item: Category) => {
+  //     this.db.category.delete(item.id).then(() => {
+  //       console.log(`Item: ${item.id}`);
+  //     });
+  //   });
+  // }
+
+  // getData() {
+  //   return this.Data;
+  // }
 }
