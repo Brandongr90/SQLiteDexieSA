@@ -35,15 +35,20 @@ export class CategoryComponent {
 
   /* Añadir Nueva Categoria */
   addSave() {
-    this.CategoryService.addData(this.Formulario.value).then(() => {
+    this.CategoryService.addToIndexDB("category",this.Formulario.value).then(() => {
       this.Formulario.reset();
       this.traerTodaLaData();
       this.alertaUno = true;
-
-      setTimeout(() => {
-        this.alertaUno = false;
-      }, 3000);
     });
+    // this.CategoryService.addData(this.Formulario.value).then(() => {
+    //   this.Formulario.reset();
+    //   this.traerTodaLaData();
+    //   this.alertaUno = true;
+
+    //   setTimeout(() => {
+    //     this.alertaUno = false;
+    //   }, 3000);
+    // });
   }
 
   /* Eliminar Categoria */
@@ -86,7 +91,11 @@ export class CategoryComponent {
 
   /* Limpiar todo de la BDD */
   eliminarTodo() {
-    this.CategoryService.eliminarTodo("category");
+    this.CategoryService.eliminarTodo("category").then(() => {
+      this.Formulario.reset();
+      this.traerTodaLaData();
+      this.alertaUno = true;
+    });
   }
 
   /* Obtener todo lo que esta guardado */

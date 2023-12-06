@@ -18,15 +18,6 @@ export class CategoryService {
     this.createDatabase();
   }
 
-  async addData(data: Category) {
-    data.id = uuidv4();
-    this.Data.push(data);
-    if (!this.OnlineOfflineService.isOnline) {
-      this.addToIndexDB(data);
-    }
-  }
-
-
   private createDatabase() {
     this.db = new Dexie('MyDatabase');
     this.db.version(1).stores({
@@ -35,39 +26,55 @@ export class CategoryService {
     });
   }
 
-  private addToIndexDB(Data: Category) {
-    this.db.category
-      .add(Data)
-      .then(async () => {
-        const allItems: Category[] = await this.db.category.toArray();
-        console.log(allItems);
-      })
-      .catch((e: any) => {
-        console.log(e);
-      });
+  // async addData(data: Category) {
+  //   data.id = uuidv4();
+  //   this.Data.push(data);
+
+
+  //   if (!this.OnlineOfflineService.isOnline) {
+  //     this.addToIndexDB(data);
+  //   }
+
+
+  // }
+
+
+
+  async addToIndexDB( tabla:string, Data: any) {
+    if (!this.OnlineOfflineService.isOnline) {
+      Data.id = await uuidv4();
+      this.db.table(tabla).add(Data);
+    }
   }
 
   async deleteToIndexDB(tabla:string, id: string) {
-    await this.db.table(tabla).delete(id);
-    this.dataSubject.next([...this.Data]);
+    if (!this.OnlineOfflineService.isOnline) {
+      await this.db.table(tabla).delete(id);
+      this.dataSubject.next([...this.Data]);
+    }
   }
 
   async UpdateToIndexDB(tabla: string, id: any, data:any) {
-    this.db.table(tabla).update(id, data).then(() => {
-      console.log('Actualizado successfully');
-    });
+    if (!this.OnlineOfflineService.isOnline) {
+      this.db.table(tabla).update(id, data).then(() => {
+        console.log('Actualizado successfully');
+      });
+    }
   }
 
 
   /* Limpiar BDD */
-  eliminarTodo(tabla:string) {
-    this.db.table(tabla).clear()
+  async eliminarTodo(tabla:string) {
+    if (!this.OnlineOfflineService.isOnline) {
+      this.db.table(tabla).clear()
+    }
   }
 
   /* Obtener todas las categorias */
   async getAll(tabla:string) {
-    return await this.db.table(tabla).toArray();
-
+    if (!this.OnlineOfflineService.isOnline) {
+      return await this.db.table(tabla).toArray();
+    }
   }
   // private registerToEvents(OnlineOfflineService: OnlineOfflineService) {
   //   OnlineOfflineService.connectionChanged.subscribe((online: any) => {
