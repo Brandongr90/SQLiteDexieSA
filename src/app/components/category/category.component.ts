@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Category } from 'src/app/models/category';
+import { Productos } from 'src/app/models/productos';
 import { CategoryService } from 'src/app/service/category.service';
 
 @Component({
@@ -12,50 +13,100 @@ export class CategoryComponent {
   /* Variable para activar la alerta */
   alertaUno: boolean = false;
   /* Informacion de la bdd */
-  Data: Category[] = [];
+  categories: Category[] = [];
+  productos: Productos[] = [];
 
   /* Formulario Agregar */
-  Formulario: FormGroup = new FormGroup({
+  categoryFormulario: FormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
   });
 
+  /* Formulario Agregar */
+  productoFormulario: FormGroup = new FormGroup({
+    name: new FormControl('', Validators.required),
+    category_id: new FormControl('', Validators.required),
+  });
+
   /* Formulario Actualizar */
-  FormularioUpdate: FormGroup = new FormGroup({
+  categoryUpdate: FormGroup = new FormGroup({
     id: new FormControl('', Validators.required),
     name: new FormControl('', Validators.required),
   });
 
+  productoUpdate: FormGroup = new FormGroup({
+    id: new FormControl('', Validators.required),
+    name: new FormControl('', Validators.required),
+    category_id: new FormControl('', Validators.required),
+  });
+
   /* Llamamos a el servicio */
-  constructor(private readonly CategoryService: CategoryService) {}
+  constructor(private readonly cs: CategoryService) { }
 
   /* Traer toda la data al cargar */
   ngOnInit() {
-    this.traerTodaLaData();
+    this.traerCategories();
+    this.traerProductos();
   }
 
   /* Añadir Nueva Categoria */
-  addSave() {
-    this.CategoryService.addToIndexDB("category",this.Formulario.value).then(() => {
-      this.Formulario.reset();
-      this.traerTodaLaData();
+  addCategory() {
+    this.cs.addData(this.categoryFormulario.value, 'category').then(() => {
+      this.categoryFormulario.reset();
+      this.traerCategories();
       this.alertaUno = true;
+      setTimeout(() => {
+        this.alertaUno = false;
+      }, 3000);
+      
     });
-    // this.CategoryService.addData(this.Formulario.value).then(() => {
-    //   this.Formulario.reset();
-    //   this.traerTodaLaData();
-    //   this.alertaUno = true;
+  }
 
-    //   setTimeout(() => {
-    //     this.alertaUno = false;
-    //   }, 3000);
-    // });
+  addProducto() {
+    this.cs.addData(this.productoFormulario.value, 'product').then(() => {
+      this.productoFormulario.reset();
+      this.traerProductos();
+      this.alertaUno = true;
+      setTimeout(() => {
+        this.alertaUno = false;
+      }, 3000);
+    });
   }
 
   /* Eliminar Categoria */
-  deleteData(id: any) {
-    this.CategoryService.deleteToIndexDB("category",id).then(() => {
-      this.FormularioUpdate.reset();
-      this.traerTodaLaData();
+  deleteCategory(id: any) {
+    this.cs.deleteToIndexDB("category", id).then(() => {
+      this.categoryUpdate.reset();
+      this.traerCategories();
+      this.alertaUno = true;
+      setTimeout(() => {
+        this.alertaUno = false;
+      }, 3000);
+    });
+  }
+
+  deleteProducto(id: any) {
+    this.cs.deleteToIndexDB("product", id).then(() => {
+      this.productoUpdate.reset();
+      this.traerProductos();
+      this.alertaUno = true;
+      setTimeout(() => {
+        this.alertaUno = false;
+      }, 3000);
+    });
+  }
+
+  /* Actualizar Categoria */
+  actualizarCategory() {
+    var newdata = {
+      name: this.categoryUpdate.value.name
+    };
+    this.cs.updateToIndexDB(
+      "category",
+      this.categoryUpdate.value.id,
+      newdata
+    ).then(() => {
+      this.categoryUpdate.reset();
+      this.traerCategories();
       this.alertaUno = true;
 
       setTimeout(() => {
@@ -64,20 +115,19 @@ export class CategoryComponent {
     });
   }
 
-  /* Actualizar Categoria */
-  actualizarData() {
+  actualizarProducto() {
     var newdata = {
-      name:this.FormularioUpdate.value.name
+      name: this.productoUpdate.value.name,
+      category_id: this.productoUpdate.value.category_id
     };
-    this.CategoryService.UpdateToIndexDB(
-      "category",
-      this.FormularioUpdate.value.id,
+    this.cs.updateToIndexDB(
+      "product",
+      this.productoUpdate.value.id,
       newdata
     ).then(() => {
-      this.Formulario.reset();
-      this.traerTodaLaData();
+      this.productoUpdate.reset();
+      this.traerProductos();
       this.alertaUno = true;
-
       setTimeout(() => {
         this.alertaUno = false;
       }, 3000);
@@ -86,22 +136,41 @@ export class CategoryComponent {
 
   /* Parchar el input de actualizar */
   editCategory(category: Category) {
-    this.FormularioUpdate.setValue({ id: category.id, name: category.name });
+    this.categoryUpdate.setValue({ id: category.id, name: category.name });
+  }
+
+  editProducto(producto: Productos) {
+    console.log(producto);
+    this.productoUpdate.setValue({ id: producto.id, name: producto.name, category_id: producto.category_id });
   }
 
   /* Limpiar todo de la BDD */
-  eliminarTodo() {
-    this.CategoryService.eliminarTodo("category").then(() => {
-      this.Formulario.reset();
-      this.traerTodaLaData();
+  eliminarCategories() {
+    this.cs.eliminarTodo("category").then(() => {
+      this.categoryFormulario.reset();
+      this.traerCategories();
+      this.alertaUno = true;
+    });
+  }
+
+  eliminarProductos() {
+    this.cs.eliminarTodo("product").then(() => {
+      this.productoFormulario.reset();
+      this.traerProductos();
       this.alertaUno = true;
     });
   }
 
   /* Obtener todo lo que esta guardado */
-  traerTodaLaData() {
-    this.CategoryService.getAll("category").then((categories) => {
-      this.Data = categories;
+  traerCategories() {
+    this.cs.getAll("category").then((categories) => {
+      this.categories = categories;
+    });
+  }
+
+  traerProductos() {
+    this.cs.getAll("product").then((productos) => {
+      this.productos = productos;
     });
   }
 
